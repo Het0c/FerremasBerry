@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'conexion.php'; 
+require_once '../conexion.php'; 
 
 // Obtener las marcas y categorías desde la BD
 $marcas_result = $conexion->query("SELECT idMarca, descripcion FROM marca");

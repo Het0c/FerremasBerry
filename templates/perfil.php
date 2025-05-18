@@ -16,6 +16,6 @@ $usuario = $_SESSION["usuario"];
 <body>
     <h2>Bienvenido, <?= htmlspecialchars($usuario["nombre"]); ?></h2>
     <p>ID de usuario: <?= htmlspecialchars($usuario["id"]); ?></p>
-    <a href="logout.php">Cerrar sesión</a>
+    <a href="../logout.php">Cerrar sesión</a>
 </body>
 </html>
