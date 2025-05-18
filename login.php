@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //if (password_verify($password, $usuario["contrasena"])) {
         if ($password == $usuario["contrasena"]) {
             $_SESSION["usuario"] = ["id" => $usuario["idUsuario"], "nombre" => $usuario["nombre"]];
-            header("Location: index.html");
+            header("Location: index.php");
             exit();
         } else {
             echo "Contraseña incorrecta.";

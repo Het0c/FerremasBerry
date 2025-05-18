@@ -48,6 +48,14 @@ CREATE TABLE `ferremas`.`categoria` (
   `descripcion` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`idCategoria`));
 
+CREATE TABLE `descuento` (
+  `idDescuento` INT NOT NULL AUTO_INCREMENT,
+  `descripcion` VARCHAR(100) NOT NULL,
+  `porcentaje` DECIMAL(5,2) NOT NULL,
+  `fecha_inicio` DATETIME NOT NULL,
+  `fecha_fin` DATETIME NOT NULL,
+  PRIMARY KEY (`idDescuento`)
+);
 
 
 CREATE TABLE `ferremas`.`producto` (
@@ -75,6 +83,10 @@ CREATE TABLE `ferremas`.`producto` (
 ALTER TABLE `ferremas`.`producto` 
 ADD COLUMN `imagen` MEDIUMBLOB NULL AFTER `categoria`;
 
+ALTER TABLE `producto` ADD COLUMN `idDescuento` INT NULL;
+ALTER TABLE `producto` ADD CONSTRAINT `fk_descuento`
+FOREIGN KEY (`idDescuento`) REFERENCES `descuento` (`idDescuento`)
+ON DELETE SET NULL ON UPDATE CASCADE;
 
 
 INSERT INTO `ferremas`.`categoria`(`idCategoria`, `descripcion`) VALUES ('0','Martillos');
@@ -96,7 +108,7 @@ INSERT INTO `ferremas`.`categoria`(`idCategoria`, `descripcion`) VALUES ('15''Ca
 INSERT INTO `ferremas`.`categoria`(`idCategoria`, `descripcion`) VALUES ('16''Guantes');
 INSERT INTO `ferremas`.`categoria`(`idCategoria`, `descripcion`) VALUES ('17''Lentes de Seguridad');
 INSERT INTO `ferremas`.`categoria`(`idCategoria`, `descripcion`) VALUES ('18''Accesorios Varios');
-INSERT INTO `ferremas`.`categoria` (`idCategoria`, `descripcion`) VALUES ('1', 'asd');
+INSERT INTO `ferremas`.`categoria` (`idCategoria`, `descripcion`) VALUES ('10', 'Otro');
 
 INSERT INTO `ferremas`.`marca` (`idMarca`, `descripcion`) VALUES 
 (1, 'Bosch'),

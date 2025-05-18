@@ -5,7 +5,15 @@ require_once 'conexion.php';
 // Obtener los productos desde la BD
 $sql = "SELECT idProducto, nombre, descripcion, precio, imagen FROM producto";
 $result = $conexion->query($sql);
+
+
+
+
+
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="es">

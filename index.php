@@ -1,3 +1,60 @@
+<?php
+session_start();
+require_once "conexion.php"; // Establece la conexión con la BD
+
+// ────────────── Consulta: Productos con Descuento ──────────────
+$sqlDiscount = "SELECT 
+                    p.idProducto,
+                    p.nombre,
+                    p.precio,
+                    p.imagen,
+                    d.porcentaje
+                FROM producto p
+                INNER JOIN descuento d ON p.idDescuento = d.idDescuento";
+$resultDiscount = $conexion->query($sqlDiscount);
+$discountProducts = [];
+if ($resultDiscount) {
+    while ($row = $resultDiscount->fetch_assoc()) {
+        $discountProducts[] = $row;
+    }
+} else {
+    die("Error en la consulta de productos con descuento: " . $conexion->error);
+}
+
+// ────────────── Consulta: Categorías con Subcategorías ──────────────
+$categories = [];
+$sqlCategories = "SELECT 
+                    c.idCategoria, 
+                    c.nombre AS nombreCategoria, 
+                    s.idSubcategoria, 
+                    s.descripcion AS nombreSub, 
+                    s.slug 
+                  FROM categoria c 
+                  LEFT JOIN subcategoria s ON c.idCategoria = s.idCategoria 
+                  ORDER BY c.nombre, s.descripcion";
+$resultCategories = $conexion->query($sqlCategories);
+if ($resultCategories) {
+    while ($row = $resultCategories->fetch_assoc()) {
+        $catId = $row["idCategoria"];
+        if (!isset($categories[$catId])) {
+            $categories[$catId] = [
+                "nombre"        => $row["nombreCategoria"],
+                "subcategorias" => []
+            ];
+        }
+        // Agregar la subcategoría si existe
+        if ($row["idSubcategoria"]) {
+            $categories[$catId]["subcategorias"][] = [
+                "nombre" => $row["nombreSub"],
+                "slug"   => !empty($row["slug"]) ? $row["slug"] : $row["idSubcategoria"]
+            ];
+        }
+    }
+} else {
+    die("Error en la consulta de categorías: " . $conexion->error);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,9 +63,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Ferremas</title>
-	<link rel="stylesheet" href="static/styles.css" />
-	<link rel="stylesheet" href="static/estiloo2.css" />
-	<link rel="stylesheet" href="static/estilo3.css" />
+	<link rel="stylesheet" href="templates/static/styles.css" />
+	<link rel="stylesheet" href="templates/static/estiloo2.css" />
+	<link rel="stylesheet" href="templates/static/estilo3.css" />
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -122,106 +179,48 @@
 
 
 
-		<div class="container-navbar">
-			<nav class="navbar container">
-				<i class="fa-solid fa-bars"></i>
-				<ul class="menu">
-					<li><a href="#">Inicio</a></li>
+    <div class="container-navbar">
+        <nav class="navbar container">
+            <i class="fa-solid fa-bars"></i>
+<ul class="menu">
+    <li><a href="index.php">Inicio</a></li>
 
-					<li class="menu__item menu__item--show">
-						<a href="#" class="menu__link">Herramientas manuales <class="menu__arrow"></a>
-
-						<ul class="menu__nesting">
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Martillos</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Destornilladores</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Llaves</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Herramientas electricas</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Taladros</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Sierras</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Lijadoras</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Materiales de construcción</a>
-							</li>
-						</ul>
-					</li>
-
-					<li class="menu__item menu__item--show">
-						<a href="#" class="menu__link">Materiales básicos<class="menu__arrow"></a>
-
-						<ul class="menu__nesting">
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Cemento</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Arena</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Ladrillos</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Acabados</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Pinturas</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Barnices</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Cerámicos</a>
-							</li>
-						</ul>
-					</li>
-
-					<li class="menu__item menu__item--show">
-						<a href="#" class="menu__link">Equipo de seguridad<class="menu__arrow"></a>
-
-						<ul class="menu__nesting">
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Casco</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Guantes</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Lentes de seguridad</a>
-							</li>
-							<li class="menu__inside">
-								<a href="#" class="menu__link menu__link--inside">Accesorios varios</a>
-							</li>
-						</ul>
-					</li>
-
-				</ul>
-				<form class="search-form">
-					<input type="search" placeholder="Buscar..." />
-					<button class="btn-search">
-						<i class="fa-solid fa-magnifying-glass"></i>
-					</button>
-				</form>
-			</nav>
-		</div>
+    <?php foreach ($categories as $cat): ?>
+        <li class="menu__item menu__item--show">
+            <a href="#" class="menu__link">
+                <?= htmlspecialchars($cat["nombre"]) ?>
+                <span class="menu__arrow"></span>
+            </a>
+            <?php if (!empty($cat["subcategorias"])): ?>
+                <ul class="menu__nesting">
+                    <?php foreach ($cat["subcategorias"] as $sub): ?>
+                        <li class="menu__inside">
+                            <a href="products.php?subcategory=<?= urlencode($sub["slug"]) ?>" 
+                               class="menu__link menu__link--inside">
+                                <?= htmlspecialchars($sub["nombre"]) ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </li>
+    <?php endforeach; ?>
+</ul>
+            <form class="search-form" action="products.php" method="GET">
+                <input type="search" name="q" placeholder="Buscar productos..." required />
+                <button type="submit" class="btn-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </nav>
+    </div>
 	</header>
 
 	<section class="banner">
 		<div class="content-banner">
 			<p>Calidad y Precio</p>
 			<h2>Mira nuestros productos<br />Para toda mano de obra</h2>
-			<a href="herramientas.html" target="_blank">Comprar ahora</a>
+			<a href="templates/herramientas.php" target="_blank">Comprar ahora</a>
 
 		</div>
 	</section>
@@ -271,110 +270,49 @@
 			</div>
 		</section>
 
-		<section class="container top-products">
-			<h1 class="heading-1">PRODUCTOS EN PROMOCIÓN</h1>
-
-			<div class="container-products">
-				<!-- Producto 1 -->
-				<div class="card-product">
-					<div class="container-img">
-						<img src="img/ZAPATO VERDE.webp" alt="Zapato Verde" />
-						<span class="discount">-13%</span>
-						<div class="button-group">
-							<span><i class="fa-regular fa-eye"></i></span>
-							<span><i class="fa-regular fa-heart"></i></span>
-							<span><i class="fa-solid fa-code-compare"></i></span>
-						</div>
-					</div>
-					<div class="content-card-product">
-						<div class="stars">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-regular fa-star"></i>
-						</div>
-						<h3>ZAPATO DE SEGURIDAD CON DOBLE FIRMESA</h3>
-						<p class="price">$4.600</p>
-						<button class="add-cart">Agregar al carrito</button>
-					</div>
-				</div>
-				<!-- Producto 2 -->
-				<div class="card-product">
-					<div class="container-img">
-						<img src="img/JUGUETES.avif" alt="Cafe incafe-ingles.jpg" />
-						<span class="discount">-22%</span>
-						<div class="button-group">
-							<span><i class="fa-regular fa-eye"></i></span>
-							<span><i class="fa-regular fa-heart"></i></span>
-							<span><i class="fa-solid fa-code-compare"></i></span>
-						</div>
-					</div>
-					<div class="content-card-product">
-						<div class="stars">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-regular fa-star"></i>
-						</div>
-						<h3>JUGUETES DE HERRAMIENTAS PARA NIÑOS</h3>
-						<p class="price">$5.700 </p>
-						<button class="add-cart">Agregar al carrito</button>
-					</div>
-				</div>
-				<!--  -->
-				<div class="card-product">
-
-					<div class="container-img">
-						<span class="discount">-35%</span>
-						<img src="img/CAJA2.png" alt="Cafe Australiano" />
-						<div class="button-group">
-							<span><i class="fa-regular fa-eye"></i></span>
-							<span><i class="fa-regular fa-heart"></i></span>
-							<span><i class="fa-solid fa-code-compare"></i></span>
-						</div>
-					</div>
-					<div class="content-card-product">
-						<div class="stars">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-regular fa-star"></i>
-						</div>
-						<h3>SET DE 15 PIEZAS</h3>
-						<p class="price">$3.200 </p>
-						<button class="add-cart">Agregar al carrito</button>
-					</div>
-				</div>
-				<!--  -->
-				<div class="card-product">
-					<div class="container-img">
-						<span class="discount">-50%</span>
-						<img src="img/CADENA.jpg" alt="Cafe Helado" />
-						<div class="button-group">
-							<span><i class="fa-regular fa-eye"></i></span>
-							<span><i class="fa-regular fa-heart"></i></span>
-							<span><i class="fa-solid fa-code-compare"></i></span>
-						</div>
-					</div>
-					<div class="content-card-product">
-						<div class="stars">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-regular fa-star"></i>
-						</div>
-						<h3>CADENA CA-1520 15 X 20CM</h3>
-						<p class="price">$5.600 </p>
-						<button class="add-cart">Agregar al carrito</button>
-					</div>
-				</div>
-
-			</div>
-		</section>
+<section class="container top-products">
+    <h1 class="heading-1">PRODUCTOS EN PROMOCIÓN</h1>
+    <div class="container-products">
+        <?php foreach ($discountProducts as $producto): ?>
+            <div class="card-product">
+                <div class="container-img">
+                    <?php if (!empty($producto['imagen'])): ?>
+                        <img src="data:image/jpeg;base64,<?= base64_encode($producto['imagen']) ?>" alt="<?= htmlspecialchars($producto['nombre']) ?>" />
+                    <?php else: ?>
+                        <!-- En caso de que no haya imagen, se muestra un placeholder -->
+                        <img src="img/placeholder.jpg" alt="Sin imagen disponible">
+                    <?php endif; ?>
+                    <span class="discount">-<?= $producto['porcentaje'] ?>%</span>
+                    <div class="button-group">
+                        <span><i class="fa-regular fa-eye"></i></span>
+                        <span><i class="fa-regular fa-heart"></i></span>
+                        <span><i class="fa-solid fa-code-compare"></i></span>
+                    </div>
+                </div>
+                <div class="content-card-product">
+                    <div class="stars">
+                        <!-- Se muestran 4 estrellas llenas y una vacía de forma estática -->
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-regular fa-star"></i>
+                    </div>
+                    <h3><?= htmlspecialchars($producto['nombre']) ?></h3>
+                    <?php 
+                        // Calcula el precio final aplicando el descuento
+                        $precio_original = $producto['precio'];
+                        $porcentaje = $producto['porcentaje'];
+                        $descuento = ($precio_original * $porcentaje) / 100;
+                        $precio_final = $precio_original - $descuento;
+                    ?>
+                    <p class="price">$<?= number_format($precio_final) ?></p>
+                    <button class="add-cart">Agregar al carrito</button>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>
 
 
 
@@ -617,8 +555,8 @@ Fecha: 2023-05-10T03,
 		</div>
 
 	</footer>
-	<script src="script/carrito.js"></script>
-	<script src="script/popupUser.js"></script>
+	<script src="templates/script/carrito.js"></script>
+	<script src="templates/script/popupUser.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
 		crossorigin="anonymous"></script>

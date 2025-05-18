@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.includes("Hola,")) {
                 userPopup.style.display = "none"; // Oculta el popup si hay sesión
                 document.getElementById("userIcon").addEventListener("click", function () {
-                    window.location.href = "perfil.php"; // Redirige al perfil
+                    window.location.href = "templates/perfil.php"; // Redirige al perfil
                 });
             } else {
                 // Si no hay sesión, mantener el funcionamiento original del popup
