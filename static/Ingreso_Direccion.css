@@ -1,0 +1,133 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f5f5f5;
+  padding: 20px;
+  color: #333;
+}
+
+/* Contenedor del formulario */
+form#address-form {
+  max-width: 600px;
+  margin: 30px auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Títulos y notas */
+p.title {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+p.note {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #888;
+}
+
+/* Campos completos */
+.full-field {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.full-field .form-label {
+  display: block;
+  color: #555;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.full-field input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+/* Filas para campos compartidos */
+.row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.half-field {
+  width: 48%;
+  margin-bottom: 15px;
+}
+
+.half-field .form-label {
+  display: block;
+  color: #555;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.half-field input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+/* Botones */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.my-button {
+  background: #ff9900;
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.my-button:hover {
+  background: #ff9900;
+}
+
+.reset-button {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 16px;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.reset-button:hover {
+  color: #555;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .row {
+    flex-direction: column;
+  }
+  .half-field {
+    width: 100%;
+  }
+}

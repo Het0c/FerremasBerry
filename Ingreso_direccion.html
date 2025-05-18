@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Autocomplete Address Form</title>
+	<link rel="stylesheet" href="static/Ingreso_Direccion.css" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+</head>
+<body>
+  <form id="address-form" action="/carrito/carrito" method="get" autocomplete="off">
+    <p class="title">Ingreso dirección para envío</p>
+    <p class="note"><em>* = campo requerido</em></p>
+
+    <label class="full-field">
+      <span class="form-label">Enviar a *</span>
+      <input id="ship-address" name="ship-address" required autocomplete="off"/>
+    </label>
+
+    <label class="full-field">
+      <span class="form-label">Apartamento, unidad, departamento o piso</span>
+      <input id="address2" name="address2" />
+    </label>
+
+    <label class="full-field">
+      <span class="form-label">Ciudad *</span>
+      <input id="locality" name="locality" required />
+    </label>
+
+    <label class="slim-field-start">
+      <span class="form-label">Región *</span>
+      <input id="state" name="state" required />
+    </label>
+
+    <label class="slim-field-end">
+      <span class="form-label">Código postal *</span>
+      <input id="postcode" name="postcode" required />
+    </label>
+
+    <label class="full-field">
+      <!-- Se agregó el asterisco para enfatizar que es obligatorio -->
+      <span class="form-label">País *</span>
+      <input id="country" name="country" required />
+    </label>
+
+    <!-- El botón sigue sin enviar el formulario directamente, suele
+         invocar la lógica de guardado/autocompletado vía JavaScript -->
+    <button type="button" class="my-button">Guardar dirección</button>
+    <input type="reset" value="Clear form" />
+  </form>
+  
+  <script src="script/apiGoogleMaps.js"></script>
+</body>
+</html>
