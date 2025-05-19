@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 19, 2025 at 12:18 AM
+-- Generation Time: May 19, 2025 at 04:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -133,6 +133,21 @@ INSERT INTO `marca` (`idMarca`, `descripcion`) VALUES
 (18, 'Klaukol'),
 (19, 'Sika'),
 (20, 'Bosca');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pedido`
+--
+
+CREATE TABLE `pedido` (
+  `idpedido` int(11) NOT NULL,
+  `idusuario` int(11) NOT NULL,
+  `fechapedido` varchar(45) NOT NULL,
+  `total` varchar(45) NOT NULL,
+  `direccionenvio` varchar(45) NOT NULL,
+  `idsucursal` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -275,6 +290,13 @@ ALTER TABLE `marca`
   ADD PRIMARY KEY (`idMarca`);
 
 --
+-- Indexes for table `pedido`
+--
+ALTER TABLE `pedido`
+  ADD PRIMARY KEY (`idpedido`),
+  ADD KEY `fk_usuario_idx` (`idusuario`);
+
+--
 -- Indexes for table `producto`
 --
 ALTER TABLE `producto`
@@ -325,6 +347,12 @@ ALTER TABLE `marca`
   MODIFY `idMarca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
+-- AUTO_INCREMENT for table `pedido`
+--
+ALTER TABLE `pedido`
+  MODIFY `idpedido` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `producto`
 --
 ALTER TABLE `producto`
@@ -345,6 +373,12 @@ ALTER TABLE `usuario`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `pedido`
+--
+ALTER TABLE `pedido`
+  ADD CONSTRAINT `fk_usuario` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `producto`

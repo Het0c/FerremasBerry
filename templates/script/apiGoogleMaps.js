@@ -186,4 +186,6 @@ document.querySelector('.my-button').addEventListener('click', function () {
     localStorage.setItem('tempShippingAddress', JSON.stringify(addressData));
 
     alert('La dirección se ha guardado temporalmente.');
+    
+    window.close();
 });

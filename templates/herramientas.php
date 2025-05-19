@@ -64,12 +64,33 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
             </div>
           </div>
           
-          <form action="pago.php" method="POST" id="form-pago">
+  <div class="resumen-line">
+    <span>Envío a domicilio</span>
+    <div class="entrega-opciones" id="entrega-opciones">
+      <!-- Usamos un checkbox. Al cambiar su estado se dispara la apertura del popup -->
+      <input type="checkbox" id="envio" name="envio_domicilio" value="envio">
+      <label for="envio">Seleccionar envío</label>
+    </div>
+  </div>
+
+
+          <form action="../pago.php" method="POST" id="form-pago">
             <input type="hidden" name="monto-total" id="monto-total" value="">
             <button type="submit" class="btn-pagar">Pagar</button>
           </form>
 
           <script>
+
+            // Al marcar el checkbox, se abre un popup para ingresar la dirección
+            document.getElementById('envio').addEventListener('change', function(){
+                if (this.checked) {
+                     // Abre una ventana emergente pequeña para agregar la dirección
+                     window.open('ingreso_direccion.html', 'AgregarDireccion', 'width=400,height=300');
+                }
+            });
+
+
+
             document.querySelector('#form-pago')?.addEventListener('submit', function (e) {
               const total = document.querySelector('.total-pagar').textContent
                 .replace('$', '')
@@ -85,6 +106,7 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
               document.querySelector('#monto-total').value = parseFloat(total);
             });
           </script>
+          
         </div>
       </div>
     </div>

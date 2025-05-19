@@ -125,47 +125,70 @@ if ($resultCategories) {
 						</svg>
 					</div>
 
-					<!-- Contenedor del carrito -->
-					<div class="carrito" id="carrito">
-						<div class="header-carrito">
-							<h2>Tu Carrito</h2>
-						</div>
+<!-- Contenedor del carrito -->
+<div class="carrito" id="carrito">
+  <div class="header-carrito">
+    <h2>Tu Carrito</h2>
+  </div>
 
-						<div class="carrito-items">
+  <div class="carrito-items">
+    <!-- Aquí se insertan dinámicamente los productos del carrito -->
+  </div>
 
-						</div>
+  <p class="cart-empty">El carrito está vacío</p>
 
-						<p class="cart-empty">El carrito está vacío</p>
+  <div class="cart-total">
+    <div class="fila">
+      <strong>Total:</strong>
+      <span class="total-pagar">$0</span>
+    </div>
+  </div>
 
-						<div class="cart-total">
-							<div class="fila">
-								<strong>Total:</strong>
-								<span class="total-pagar">$0</span>
-							</div>
-						</div>
+  <div class="resumen-line">
+    <span>Envío a domicilio</span>
+    <div class="entrega-opciones" id="entrega-opciones">
+      <!-- Usamos un checkbox. Al cambiar su estado se dispara la apertura del popup -->
+      <input type="checkbox" id="envio" name="envio_domicilio" value="envio">
+      <label for="envio">Seleccionar envío</label>
+    </div>
+  </div>
 
+  <!-- Formulario de Pago -->
+  <form action="pago.php" method="POST" id="form-pago">
+    <input type="hidden" name="monto-total" id="monto-total" value="">
+    <!-- Campo oculto para almacenar la dirección ingresada en el popup -->
+    <input type="hidden" name="direccion" id="direccion-field" value="">
+    <button type="submit" class="btn-pagar">Pagar</button>
+  </form>
+</div>
 
-						<form action="pago.php" method="POST" id="form-pago">
-							<input type="hidden" name="monto-total" id="monto-total" value="">
-							<button type="submit" class="btn-pagar">Pagar</button>
-						</form>
+<script>
+// Al marcar el checkbox, se abre un popup para ingresar la dirección
+document.getElementById('envio').addEventListener('change', function(){
+    if (this.checked) {
+         // Abre una ventana emergente pequeña para agregar la dirección
+         window.open('templates/ingreso_direccion.html', 'AgregarDireccion', 'width=400,height=300');
+    }
+});
 
-						<script>
-							document.querySelector('#form-pago')?.addEventListener('submit', function (e) {
-								const total = document.querySelector('.total-pagar').textContent
-									.replace('$', '')
-									.replace(/\./g, '')
-									.replace(',', '.');
+// Procesa el formulario de pago
+document.getElementById('form-pago').addEventListener('submit', function(e) {
+    const totalStr = document.querySelector('.total-pagar').textContent
+        .replace('$', '')
+        .replace(/\./g, '')
+        .replace(/,/g, '');
+  
+    if (!totalStr || isNaN(parseFloat(totalStr))) {
+         alert("Total inválido");
+         e.preventDefault();
+         return;
+    }
+  
+    // Asegura que el valor tenga dos decimales y se asigne al campo oculto
+    document.getElementById('monto-total').value = parseFloat(totalStr).toFixed(2);
+});
+</script>
 
-								if (!total || isNaN(parseFloat(total))) {
-									alert("Total inválido");
-									e.preventDefault();
-									return;
-								}
-
-								document.querySelector('#monto-total').value = parseFloat(total);
-							});
-						</script>
 					</div>
 				</div>
 
