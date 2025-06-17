@@ -4,7 +4,7 @@ require_once '../conexion.php';
 
 // Obtener las marcas y categorías desde la BD
 $marcas_result = $conexion->query("SELECT idMarca, descripcion FROM marca");
-$categorias_result = $conexion->query("SELECT idCategoria, descripcion FROM categoria");
+$categorias_result = $conexion->query("SELECT idCategoria, descripcion FROM subcategoria");
 
 // Procesar el formulario
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
      // Insertar producto en la BD usando consulta preparada
-    $sql = "INSERT INTO producto (nombre, descripcion, precio, marca, categoria, imagen) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO producto (nombre, descripcion, precio, marca, subcategoria, imagen) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conexion->prepare($sql);
     
     // Cambia 'b' por 's' y usa send_long_data()

@@ -5,6 +5,24 @@ require_once '../conexion.php';
 // Consulta para obtener todos los productos
 $result = $conexion->query("SELECT * FROM producto");
 $products = $result->fetch_all(MYSQLI_ASSOC);
+
+// Obtener la moneda seleccionada; por defecto CLP
+$monedaSeleccionada = 'CLP';
+if (isset($_GET['moneda'])) {
+    $monedaSeleccionada = $_GET['moneda'];
+}
+
+// Definir tasas de cambio (ejemplo; en producción, obtener de una API externa)
+$tasasCambio = [
+    'USD' => ['tasa' => 800],
+    'EUR' => ['tasa' => 900],
+    'BRL' => ['tasa' => 150],
+    'COP' => ['tasa' => 0.22],
+    'MXN' => ['tasa' => 40]
+];
+
+// Obtener la hora de actualización (para mostrar información en la vista)
+$fechaActualizacion = date("H:i");
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -36,12 +54,12 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
                stroke="currentColor" class="icon-cart">
             <path stroke-linecap="round" stroke-linejoin="round"
                   d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993
-                  l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125
-                  1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0
-                  015.513 7.5h12.974c.576 0 1.059.435 1.119
-                  1.007zM8.625 10.5a.375.375 0 11-.75 0
-                  .375.375 0 01.75 0zm7.5 0a.375.375 0
-                  11-.75 0 .375.375 0 01.75 0z" />
+                     l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125
+                     1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0
+                     015.513 7.5h12.974c.576 0 1.059.435 1.119
+                     1.007zM8.625 10.5a.375.375 0 11-.75 0
+                     .375.375 0 01.75 0zm7.5 0a.375.375 0
+                     11-.75 0 .375.375 0 01.75 0z" />
           </svg>
         </div>
         
@@ -64,15 +82,14 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
             </div>
           </div>
           
-  <div class="resumen-line">
-    <span>Envío a domicilio</span>
-    <div class="entrega-opciones" id="entrega-opciones">
-      <!-- Usamos un checkbox. Al cambiar su estado se dispara la apertura del popup -->
-      <input type="checkbox" id="envio" name="envio_domicilio" value="envio">
-      <label for="envio">Seleccionar envío</label>
-    </div>
-  </div>
-
+          <div class="resumen-line">
+            <span>Envío a domicilio</span>
+            <div class="entrega-opciones" id="entrega-opciones">
+              <!-- Checkbox para seleccionar el envío -->
+              <input type="checkbox" id="envio" name="envio_domicilio" value="envio">
+              <label for="envio">Seleccionar envío</label>
+            </div>
+          </div>
 
           <form action="../pago.php" method="POST" id="form-pago">
             <input type="hidden" name="monto-total" id="monto-total" value="">
@@ -80,17 +97,14 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
           </form>
 
           <script>
-
-            // Al marcar el checkbox, se abre un popup para ingresar la dirección
+            // Abre un popup para ingresar la dirección al marcar envío a domicilio
             document.getElementById('envio').addEventListener('change', function(){
-                if (this.checked) {
-                     // Abre una ventana emergente pequeña para agregar la dirección
-                     window.open('ingreso_direccion.html', 'AgregarDireccion', 'width=400,height=300');
-                }
+              if (this.checked) {
+                window.open('ingreso_direccion.html', 'AgregarDireccion', 'width=400,height=300');
+              }
             });
 
-
-
+            // Validación del monto total al enviar el formulario de pago
             document.querySelector('#form-pago')?.addEventListener('submit', function (e) {
               const total = document.querySelector('.total-pagar').textContent
                 .replace('$', '')
@@ -111,36 +125,67 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
       </div>
     </div>
   </div>
+
+  <!-- Selector de divisa -->
+  <div class="divisa-selector-container" style="margin: 20px; text-align: center;">
+    <form method="get" action="">
+      <label for="moneda">Mostrar precios en:</label>
+      <select name="moneda" id="moneda" onchange="this.form.submit()">
+         <option value="CLP" <?= ($monedaSeleccionada == 'CLP') ? 'selected' : '' ?>>Pesos Chilenos (CLP)</option>
+         <option value="USD" <?= ($monedaSeleccionada == 'USD') ? 'selected' : '' ?>>Dólares (USD)</option>
+         <option value="EUR" <?= ($monedaSeleccionada == 'EUR') ? 'selected' : '' ?>>Euros (EUR)</option>
+         <option value="BRL" <?= ($monedaSeleccionada == 'BRL') ? 'selected' : '' ?>>Reales (BRL)</option>
+         <option value="COP" <?= ($monedaSeleccionada == 'COP') ? 'selected' : '' ?>>Pesos Colombianos (COP)</option>
+         <option value="MXN" <?= ($monedaSeleccionada == 'MXN') ? 'selected' : '' ?>>Pesos Mexicanos (MXN)</option>
+      </select>
+    </form>
+    <span class="tasa-actualizacion">
+      <?php if ($monedaSeleccionada != 'CLP' && isset($tasasCambio[$monedaSeleccionada])): ?>
+          Tasa: 1 <?= $monedaSeleccionada ?> = <?= number_format($tasasCambio[$monedaSeleccionada]['tasa'], 2, ".", ",") ?> CLP
+      <?php elseif ($monedaSeleccionada != 'CLP'): ?>
+          Tasa no disponible para <?= htmlspecialchars($monedaSeleccionada) ?>
+      <?php endif; ?>
+       | Actualizado: <?= $fechaActualizacion ?>
+    </span>
+  </div>
   
   <section class="contenido">
     <!-- Mostrador de productos dinámico -->
     <div class="mostrador" id="mostrador">
       <div class="fila">
-        <?php
-          // Recorrer los productos obtenidos de la base de datos
-          // Puedes agregar lógica para organizar en filas según la cantidad deseada
-          foreach ($products as $product):
-            // Si existe imagen, conviértela a base64; si no, usa un placeholder.
-            if (!empty($product['imagen'])) {
-              $imgSrc = "data:image/jpeg;base64," . base64_encode($product['imagen']);
+        <?php foreach ($products as $product):
+          // Si existe imagen, conviértela a base64; de lo contrario usa un placeholder.
+          if (!empty($product['imagen'])) {
+            $imgSrc = "data:image/jpeg;base64," . base64_encode($product['imagen']);
+          } else {
+            $imgSrc = "img/placeholder.jpg";
+          }
+          
+          // Formatear el precio según la moneda seleccionada.
+          if ($monedaSeleccionada == 'CLP') {
+            $precioMostrado = "$ " . number_format($product['precio'], 0, ",", ".");
+          } else {
+            if (isset($tasasCambio[$monedaSeleccionada])) {
+              $precioConvertido = $product['precio'] / $tasasCambio[$monedaSeleccionada]['tasa'];
+              $precioMostrado = "$ " . number_format($precioConvertido, 2, ",", ".") . " " . $monedaSeleccionada;
+              $precioMostrado .= "<br><small>($ " . number_format($product['precio'], 0, ",", ".") . " CLP)</small>";
             } else {
-              $imgSrc = "img/placeholder.jpg";
+              $precioMostrado = "<span class='error'>Tasa no disponible</span>";
             }
-            // Formatear el precio (asumiendo que 'precio' es un número)
-            $precioFormateado = "$ " . number_format($product['precio'], 0, ",", ".");
+          }
         ?>
             <div class="item" onclick="cargar(this)">
               <div class="contenedor-foto">
                 <img src="<?= $imgSrc ?>" alt="<?= htmlspecialchars($product['nombre']) ?>">
               </div>
               <p class="descripcion"><?= htmlspecialchars($product['nombre']) ?></p>
-              <span class="precio"><?= $precioFormateado ?></span>
+              <span class="precio"><?= $precioMostrado ?></span>
             </div>
         <?php endforeach; ?>
       </div>
     </div>
 
-    <!-- Sección de selección, por ejemplo para mostrar detalles de un producto al hacer clic -->
+    <!-- Sección de selección, por ejemplo para mostrar detalles de un producto -->
     <div class="seleccion" id="seleccion">
       <div class="cerrar" onclick="cerrar()">&#x2715</div>
       <div class="info">
@@ -180,7 +225,7 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
   </section>
 
   <script>
-    // Ejemplo: evento para agregar producto al carrito desde la sección de selección
+    // Ejemplo: al hacer clic en "AGREGAR AL CARRITO" se captura la información del producto
     document.addEventListener('DOMContentLoaded', function () {
       const btn = document.getElementById('btnAgregarAlCarrito');
       btn.addEventListener('click', function () {

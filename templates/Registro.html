@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de cuenta</title>
+    <link rel="stylesheet" href="static/Registro.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h3>Crear usuario</h3>
+        <!-- El formulario apunta al script PHP (registro.php) que se encuentra un nivel arriba -->
+        <form action="../registro.php" method="POST">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="apellido">Apellido:</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Correo electrónico:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" class="form-control" id="telefono" name="telefono" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <!-- Aunque se envía este campo, lo forzamos a 1 en el PHP para mayor seguridad -->
+            <input type="hidden" name="tipoUsuario" value="1">
+            <button type="submit" class="btn btn-primary">Registrar usuario</button>
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Regresar</button>
+        </form>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            var tipo = document.getElementById('tipoUsuario').value;
+            if (!tipo) {
+                alert('Por favor seleccione un tipo de usuario.');
+                e.preventDefault(); 
+            }
+        });
+    </script>
+</body>
+</html>

@@ -100,7 +100,7 @@ if ($resultCategories) {
 				            <button type="submit">Entrar</button>
 				        </form>
 				        <p style="margin-top:10px; text-align: center;">
-				            ¿No tiene cuenta? <a href="registro.php">Regístrese</a>
+				            ¿No tiene cuenta? <a href="templates/registro.html">Regístrese</a>
 				        </p>
 				    </div>
 				</div>
