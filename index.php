@@ -460,7 +460,7 @@ document.getElementById('form-pago').addEventListener('submit', function(e) {
 				</div>
 			</div>
 
-			<form class="formulario" action="conexion.php" method="POST">
+			<form class="formulario" action="queja.php" method="POST">
 				<div class="input-formulario">
 					<label for="nombre">Nombre</label>
 					<input type="text" placeholder="Pedro" id="nombre" name="nombre" required>
