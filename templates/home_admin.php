@@ -35,10 +35,10 @@ if (!isset($pedidos_recientes)) {
       <h2><i class="fas fa-tools"></i> Panel Admin</h2>
       <nav>
         <ul>
-          <li><a href="/admin/dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-          <li><a href="/admin/productos"><i class="fas fa-boxes"></i> Registrar Productos</a></li>
-          <li><a href="/registra"><i class="fas fa-user-plus"></i> Registro De Empleados</a></li>
-          <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+          <li><a href="home_admin.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li><a href="agregar_producto.php"><i class="fas fa-boxes"></i> Registrar Productos</a></li>
+          <li><a href="registro_empleado"><i class="fas fa-user-plus"></i> Registro De Empleados</a></li>
+          <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
         </ul>
       </nav>
     </aside>

@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email    = $_POST["email"];
     $password = $_POST["password"];
 
-    $query = "SELECT idUsuario, nombre, contrasena FROM usuario WHERE email = ?";
+    $query = "SELECT idUsuario, nombre, contrasena, tipoUsuario FROM usuario WHERE email = ?";
     $stmt  = $conexion->prepare($query);
 
     if (!$stmt) {
@@ -20,11 +20,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($resultado->num_rows > 0) {
         $usuario = $resultado->fetch_assoc();
         //en caso de contraseña hasheada
-        //if (password_verify($password, $usuario["contrasena"])) {
-        if ($password == $usuario["contrasena"]) {
+        if (password_verify($password, $usuario["contrasena"])) {
+        //if ($password == $usuario["contrasena"]) {
             $_SESSION["usuario"] = ["id" => $usuario["idUsuario"], "nombre" => $usuario["nombre"]];
-            header("Location: index.php");
-            exit();
+
+            if(1 == $usuario["tipoUsuario"]) {
+                header("Location: index.php");
+                exit();
+            }
+            if(2 == $usuario["tipoUsuario"]) {
+                header("Location: templates/home_admin.php");
+                exit();
+            }
         } else {
             echo "Contraseña incorrecta.";
         }
